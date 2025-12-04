@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wavefont Optimizer</title>
+    <meta name="description" content="Visualize and optimize web font loading strategies.">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 20L12 4L20 20H16L12 12L8 20H4Z" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <h1>Wavefont Optimizer</h1>
+            </div>
+            <nav>
+                <a href="#" id="nav-optimizer" class="active">Optimizer</a>
+                <a href="#" id="nav-playground">Playground</a>
+                <a href="#" id="nav-about">About</a>
+            </nav>
+        </header>
+
+        <main class="main-content">
+            <aside class="sidebar">
+                <div class="panel control-panel">
+                    <h2>Configuration</h2>
+
+                    <div class="control-group">
+                        <label for="font-select">Target Font</label>
+                        <select id="font-select">
+                            <optgroup label="Sans-Serif">
+                                <option value="Roboto">Roboto</option>
+                                <option value="Open Sans">Open Sans</option>
+                                <option value="Lato">Lato</option>
+                                <option value="Montserrat">Montserrat</option>
+                                <option value="Poppins">Poppins</option>
+                                <option value="Inter">Inter</option>
+                                <option value="Nunito">Nunito</option>
+                                <option value="Raleway">Raleway</option>
+                                <option value="Ubuntu">Ubuntu</option>
+                                <option value="Outfit">Outfit</option>
+                            </optgroup>
+                            <optgroup label="Serif">
+                                <option value="Playfair Display">Playfair Display</option>
+                                <option value="Merriweather">Merriweather</option>
+                                <option value="Lora">Lora</option>
+                                <option value="PT Serif">PT Serif</option>
+                                <option value="Source Serif Pro">Source Serif Pro</option>
+                            </optgroup>
+                            <optgroup label="Display">
+                                <option value="Oswald">Oswald</option>
+                                <option value="Bebas Neue">Bebas Neue</option>
+                                <option value="Anton">Anton</option>
+                                <option value="Abril Fatface">Abril Fatface</option>
+                            </optgroup>
+                            <optgroup label="Monospace">
+                                <option value="Fira Code">Fira Code</option>
+                                <option value="JetBrains Mono">JetBrains Mono</option>
+                                <option value="Source Code Pro">Source Code Pro</option>
+                            </optgroup>
+                            <option value="Custom">Custom URL...</option>
+                        </select>
+                        <div id="custom-url-group" class="hidden" style="margin-top: 0.5rem;">
+                            <input type="text" id="custom-font-url" placeholder="Enter Google Fonts URL...">
+                            <input type="text" id="custom-font-name" placeholder="Font Name (e.g., Inter)"
+                                style="margin-top: 0.5rem;">
+                        </div>
+                    </div>
+
+                    <div id="optimizer-controls">
+                        <div class="control-group">
+                            <label for="strategy-select">Loading Strategy</label>
+                            <select id="strategy-select">
+                                <option value="block">Blocking (Default)</option>
+                                <option value="swap">Swap</option>
+                                <option value="fallback">Fallback</option>
+                                <option value="optional">Optional</option>
+                            </select>
+                            <p class="helper-text">Controls how the font behaves while loading.</p>
+                        </div>
+
+                        <div class="control-group">
+                            <button id="reload-btn" class="btn primary">
+                                <span class="icon">↻</span> Reload & Test
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="playground-controls" class="hidden">
+                        <div class="control-group">
+                            <label>Compare Fonts</label>
+                            <div style="display: grid; gap: 0.5rem;">
+                                <div>
+                                    <label style="font-size: 0.75rem;">Font 1:</label>
+                                    <select id="compare-font-1">
+                                        <optgroup label="Sans-Serif">
+                                            <option value="Roboto">Roboto</option>
+                                            <option value="Open Sans">Open Sans</option>
+                                            <option value="Lato">Lato</option>
+                                            <option value="Montserrat">Montserrat</option>
+                                            <option value="Poppins">Poppins</option>
+                                            <option value="Inter">Inter</option>
+                                            <option value="Nunito">Nunito</option>
+                                            <option value="Raleway">Raleway</option>
+                                        </optgroup>
+                                        <optgroup label="Serif">
+                                            <option value="Playfair Display">Playfair Display</option>
+                                            <option value="Merriweather">Merriweather</option>
+                                            <option value="Lora">Lora</option>
+                                        </optgroup>
+                                        <optgroup label="Display">
+                                            <option value="Oswald">Oswald</option>
+                                            <option value="Bebas Neue">Bebas Neue</option>
+                                        </optgroup>
+                                        <optgroup label="Monospace">
+                                            <option value="Fira Code">Fira Code</option>
+                                            <option value="JetBrains Mono">JetBrains Mono</option>
+                                        </optgroup>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label style="font-size: 0.75rem;">Font 2:</label>
+                                    <select id="compare-font-2">
+                                        <optgroup label="Sans-Serif">
+                                            <option value="Roboto">Roboto</option>
+                                            <option value="Open Sans">Open Sans</option>
+                                            <option value="Lato" selected>Lato</option>
+                                            <option value="Montserrat">Montserrat</option>
+                                            <option value="Poppins">Poppins</option>
+                                            <option value="Inter">Inter</option>
+                                            <option value="Nunito">Nunito</option>
+                                            <option value="Raleway">Raleway</option>
+                                        </optgroup>
+                                        <optgroup label="Serif">
+                                            <option value="Playfair Display">Playfair Display</option>
+                                            <option value="Merriweather">Merriweather</option>
+                                            <option value="Lora">Lora</option>
+                                        </optgroup>
+                                        <optgroup label="Display">
+                                            <option value="Oswald">Oswald</option>
+                                            <option value="Bebas Neue">Bebas Neue</option>
+                                        </optgroup>
+                                        <optgroup label="Monospace">
+                                            <option value="Fira Code">Fira Code</option>
+                                            <option value="JetBrains Mono">JetBrains Mono</option>
+                                        </optgroup>
+                                    </select>
+                                </div>
+                                <button id="compare-btn" class="btn primary" style="width: 100%; margin-top: 0.5rem;">
+                                    Compare Fonts
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label>Playground</label>
+                            <div style="display: grid; gap: 0.5rem;">
+                                <div>
+                                    <label for="font-size" style="font-size: 0.75rem;">Size: <span
+                                            id="size-val">16px</span></label>
+                                    <input type="range" id="font-size" min="12" max="72" value="16">
+                                </div>
+                                <div>
+                                    <label for="font-weight" style="font-size: 0.75rem;">Weight: <span
+                                            id="weight-val">400</span></label>
+                                    <input type="range" id="font-weight" min="100" max="900" step="100" value="400">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <button id="export-btn" class="btn secondary" style="width: 100%;">
+                                <span class="icon">⤓</span> Export CSS
+                            </button>
+                        </div>
+
+                        <div class="control-group">
+                            <label>Subset Builder</label>
+                            <div style="background: rgba(0,0,0,0.2); padding: 0.75rem; border-radius: 0.5rem;">
+                                <div style="margin-bottom: 0.5rem;">
+                                    <input type="checkbox" id="subset-latin" checked>
+                                    <label for="subset-latin" style="display:inline;">Latin (A-Z)</label>
+                                </div>
+                                <div style="margin-bottom: 0.5rem;">
+                                    <input type="checkbox" id="subset-numbers" checked>
+                                    <label for="subset-numbers" style="display:inline;">Numbers (0-9)</label>
+                                </div>
+                                <div style="margin-bottom: 0.5rem;">
+                                    <input type="checkbox" id="subset-symbols" checked>
+                                    <label for="subset-symbols" style="display:inline;">Symbols (!@#$%)</label>
+                                </div>
+                                <div style="margin-bottom: 0.5rem;">
+                                    <input type="checkbox" id="subset-extended" checked>
+                                    <label for="subset-extended" style="display:inline;">Extended Latin (éàü)</label>
+                                </div>
+
+                                <div
+                                    style="border-top: 1px solid var(--surface-border); padding-top: 0.75rem; margin-top: 0.75rem;">
+                                    <div
+                                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                        <span style="font-size: 0.75rem; color: var(--text-secondary);">Estimated
+                                            Size:</span>
+                                        <span id="subset-size" style="color: var(--accent-color); font-weight: 600;">38
+                                            KB</span>
+                                    </div>
+                                    <button id="test-subset-btn" class="btn primary"
+                                        style="width: 100%; padding: 0.5rem;">
+                                        Test Subset
+                                    </button>
+                                    <button id="reset-subset-btn" class="btn secondary"
+                                        style="width: 100%; padding: 0.5rem; margin-top: 0.5rem;">
+                                        Reset Text
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="metrics-panel" class="panel metrics-panel">
+                    <h2>Live Metrics</h2>
+                    <div class="metric-card">
+                        <span class="metric-label">FOUT Duration</span>
+                        <span class="metric-value" id="fout-metric">-- s</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-label">FOIT Duration</span>
+                        <span class="metric-value" id="foit-metric">-- s</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-label">CLS Impact</span>
+                        <span class="metric-value" id="cls-metric">0.00</span>
+                    </div>
+                </div>
+            </aside>
+
+            <section class="preview-area">
+                <div class="preview-header">
+                    <h2>Preview</h2>
+                    <div class="preview-controls">
+                        <button class="btn secondary small" id="toggle-overlay">Show Overlay</button>
+                    </div>
+                </div>
+                <div class="preview-canvas" id="preview-canvas">
+                    <div class="preview-overlay" id="preview-overlay"></div>
+                    <div class="text-sample" id="text-sample-single" contenteditable="true">
+                        <h1>The quick brown fox jumps over the lazy dog</h1>
+                        <p>Pack my box with five dozen liquor jugs. Jackdaws love my big sphinx of quartz. The five
+                            boxing wizards jump quickly. How vexingly quick daft zebras jump!</p>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut
+                            labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+                            laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    </div>
+
+                    <!-- Comparison Mode (hidden by default) -->
+                    <div class="font-comparison hidden" id="font-comparison">
+                        <div class="compare-column" id="compare-col-1">
+                            <div class="compare-label" id="compare-label-1">Roboto</div>
+                            <div class="compare-text">
+                                <h1>The quick brown fox</h1>
+                                <p>Pack my box with five dozen liquor jugs. Jackdaws love my big sphinx of quartz.</p>
+                            </div>
+                        </div>
+                        <div class="compare-column" id="compare-col-2">
+                            <div class="compare-label" id="compare-label-2">Lato</div>
+                            <div class="compare-text">
+                                <h1>The quick brown fox</h1>
+                                <p>Pack my box with five dozen liquor jugs. Jackdaws love my big sphinx of quartz.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="timeline-viz" id="timeline-viz">
+                    <!-- Timeline visualization will go here -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script type="module" src="js/app.js"></script>
+</body>
+
+</html>
+<div id="about-modal" class="modal hidden">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>About Wavefont Optimizer</h2>
+            <button id="close-modal" class="btn-icon">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p>Wavefont Optimizer is a developer tool designed to help you visualize and optimize web font loading
+                strategies.</p>
+            <h3>Features</h3>
+            <ul>
+                <li>Test different loading strategies (Block, Swap, Fallback, Optional)</li>
+                <li>Visualize loading timelines and metrics (FOIT, FOUT, CLS)</li>
+                <li>Interactive playground for variable fonts</li>
+                <li>Export optimized CSS snippets</li>
+            </ul>
+            <p style="margin-top: 1rem; font-size: 0.875rem; color: var(--text-secondary);">Version 1.0.0</p>
+        </div>
+    </div>
+</div>
