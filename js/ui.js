@@ -555,12 +555,31 @@ body {
                 break;
 
             case 'fallback':
-                // Show fallback, swap only if loads within 100ms, else keep fallback
-                if (this.elements.textSample) this.elements.textSample.style.fontFamily = 'Georgia, serif';
-                // Simulate: font usually doesn't load in 100ms, so keep fallback
+                // 1. Block Period (~100ms): Hide text
+                if (this.elements.textSample) this.elements.textSample.style.visibility = 'hidden';
                 await new Promise(r => setTimeout(r, 100));
-                // Font didn't load fast enough, keep fallback
-                this.metrics.updateMetricsFromLoader({ success: true, duration: 100 }, 'fallback');
+
+                // 2. Swap Period (~3s): Show fallback
+                if (this.elements.textSample) {
+                    this.elements.textSample.style.visibility = 'visible';
+                    this.elements.textSample.style.fontFamily = 'Georgia, serif';
+                }
+
+                // Check if font loads within the swap period (3000ms)
+                if (simulatedLoadTime < 3000) {
+                    // Wait for the remaining load time
+                    await new Promise(r => setTimeout(r, simulatedLoadTime - 100));
+
+                    // Swap to target font
+                    if (this.elements.textSample) {
+                        this.elements.textSample.style.fontFamily = `"${actualFontName}", sans-serif`;
+                    }
+                    this.metrics.updateMetricsFromLoader({ success: true, duration: simulatedLoadTime }, 'fallback');
+                } else {
+                    // Font took too long (>3s), stick with fallback
+                    // We don't swap even if it eventually loads (for this page view)
+                    this.metrics.updateMetricsFromLoader({ success: true, duration: simulatedLoadTime, swapped: false }, 'fallback');
+                }
                 break;
 
             case 'optional':

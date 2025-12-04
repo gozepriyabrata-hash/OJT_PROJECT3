@@ -437,3 +437,50 @@ input[type="text"]:focus {
 .preview-overlay.visible {
     display: block;
 }
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .app-container {
+        height: auto;
+        overflow-y: auto;
+    }
+
+    .main-content {
+        flex-direction: column;
+        overflow: visible;
+    }
+
+    .sidebar {
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--surface-border);
+        overflow-y: visible;
+    }
+
+    .preview-area {
+        width: 100%;
+        overflow-y: visible;
+        padding: var(--space-md);
+    }
+
+    .font-comparison {
+        grid-template-columns: 1fr;
+    }
+
+    .app-header {
+        padding: var(--space-sm) var(--space-md);
+        flex-direction: column;
+        gap: var(--space-md);
+    }
+
+    nav {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .modal-content {
+        width: 95%;
+        margin: var(--space-md);
+    }
+}
