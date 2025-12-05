@@ -82,6 +82,30 @@ export class UI {
             });
         }
 
+        // Debounce utility
+        const debounce = (func, wait) => {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        };
+
+        // Auto-update for custom font inputs
+        const debouncedReload = debounce(() => this.handleReload(), 500);
+
+        if (this.elements.customFontUrl) {
+            this.elements.customFontUrl.addEventListener('input', debouncedReload);
+        }
+
+        if (this.elements.customFontName) {
+            this.elements.customFontName.addEventListener('input', debouncedReload);
+        }
+
         // Tab Switching
         if (this.elements.navOptimizer) {
             this.elements.navOptimizer.addEventListener('click', (e) => {
