@@ -39,10 +39,10 @@ export class UI {
             toggleOverlayBtn: document.getElementById('toggle-overlay'),
             previewOverlay: document.getElementById('preview-overlay'),
 
-            // Custom URL Elements
-            customUrlGroup: document.getElementById('custom-url-group'),
-            customFontUrl: document.getElementById('custom-font-url'),
-            customFontName: document.getElementById('custom-font-name'),
+            // Overlay Elements
+            toggleOverlayBtn: document.getElementById('toggle-overlay'),
+            previewOverlay: document.getElementById('preview-overlay'),
+
 
             // Font Comparison Elements
             compareFont1: document.getElementById('compare-font-1'),
@@ -71,40 +71,8 @@ export class UI {
             this.elements.exportBtn.addEventListener('click', () => this.handleExport());
         }
 
-        // Show/hide custom URL input based on font selection
-        if (this.elements.fontSelect) {
-            this.elements.fontSelect.addEventListener('change', () => {
-                if (this.elements.fontSelect.value === 'Custom') {
-                    this.elements.customUrlGroup.classList.remove('hidden');
-                } else {
-                    this.elements.customUrlGroup.classList.add('hidden');
-                }
-            });
-        }
-
-        // Debounce utility
-        const debounce = (func, wait) => {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
-        };
-
         // Auto-update for custom font inputs
         const debouncedReload = debounce(() => this.handleReload(true), 500);
-
-        if (this.elements.customFontUrl) {
-            this.elements.customFontUrl.addEventListener('input', debouncedReload);
-        }
-
-        if (this.elements.customFontName) {
-            this.elements.customFontName.addEventListener('input', debouncedReload);
-        }
 
         // Tab Switching
         if (this.elements.navOptimizer) {
@@ -498,89 +466,41 @@ body {
             'Bebas Neue': 'https://fonts.googleapis.com/css2?family=Bebas+Neue',
             'Anton': 'https://fonts.googleapis.com/css2?family=Anton',
             'Abril Fatface': 'https://fonts.googleapis.com/css2?family=Abril+Fatface',
+            'Righteous': 'https://fonts.googleapis.com/css2?family=Righteous',
+            // Handwriting
+            'Dancing Script': 'https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700',
+            'Pacifico': 'https://fonts.googleapis.com/css2?family=Pacifico',
+            // Chinese
+            'Noto Sans SC': 'https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700',
+            'Ma Shan Zheng': 'https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng',
+            'Zhi Mang Xing': 'https://fonts.googleapis.com/css2?family=Zhi+Mang+Xing',
+            'Liu Jian Mao Cao': 'https://fonts.googleapis.com/css2?family=Liu+Jian+Mao+Cao',
+            'Long Cang': 'https://fonts.googleapis.com/css2?family=Long+Cang',
+            // Japanese
+            'Noto Sans JP': 'https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700',
+            'Sawarabi Mincho': 'https://fonts.googleapis.com/css2?family=Sawarabi+Mincho',
+            'Zen Maru Gothic': 'https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700',
+            'Reggae One': 'https://fonts.googleapis.com/css2?family=Reggae+One',
+            'DotGothic16': 'https://fonts.googleapis.com/css2?family=DotGothic16',
             // Monospace
             'Fira Code': 'https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700',
             'JetBrains Mono': 'https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700',
-            'Source Code Pro': 'https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;700'
+            'Source Code Pro': 'https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;700',
+            'Space Mono': 'https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700'
         };
+
 
         // Determine font URL and name
         let fontUrl;
         let actualFontName = fontName;
 
-        if (fontName === 'Custom') {
-            fontUrl = this.elements.customFontUrl ? this.elements.customFontUrl.value.trim() : '';
-            const customName = this.elements.customFontName ? this.elements.customFontName.value.trim() : '';
-
-            if (!fontUrl) {
-                // Don't alert on auto-update, just return
-                return;
-            }
-
-            // Decode HTML entities (e.g. &amp; -> &)
-            fontUrl = fontUrl.replace(/&amp;/g, '&');
-
-            // Check if user pasted a full <link> tag
-            if (fontUrl.includes('<link') && fontUrl.includes('href')) {
-                // Match the href that points to the CSS file (ignore preconnect links)
-                // Allow for flexible spacing around =
-                const hrefMatch = fontUrl.match(/href\s*=\s*["'](https:\/\/fonts\.googleapis\.com\/css[^"']+)["']/);
-                if (hrefMatch) {
-                    fontUrl = hrefMatch[1];
-                }
-            }
-            // Check if user pasted an @import statement
-            else if (fontUrl.includes('@import') && fontUrl.includes('url')) {
-                const urlMatch = fontUrl.match(/url\s*\(['"]?(https:\/\/fonts\.googleapis\.com\/css[^'"\)]+)['"]?\)/);
-                if (urlMatch) {
-                    fontUrl = urlMatch[1];
-                }
-            }
-
-            try {
-                const urlObj = new URL(fontUrl);
-
-                // Remove existing display param
-                urlObj.searchParams.delete('display');
-
-                // Update fontUrl from the modified object
-                fontUrl = urlObj.toString();
-
-                // Extract font name from Google Fonts URL
-                const familyParam = urlObj.searchParams.get('family');
-                if (familyParam) {
-                    // The family param might be "Roboto:wght@400;700" or just "Roboto"
-                    // We want just the name part before the colon
-                    actualFontName = familyParam.split(':')[0].replace(/\+/g, ' ');
-
-                    // Auto-update the font name input to match the URL
-                    if (this.elements.customFontName) {
-                        this.elements.customFontName.value = actualFontName;
-                    }
-                } else if (customName) {
-                    // Fallback to custom name ONLY if URL extraction failed
-                    actualFontName = customName;
-                } else {
-                    actualFontName = 'CustomFont';
-                }
-            } catch (e) {
-                console.warn('Invalid URL entered:', e);
-                // If URL parsing fails, we might still want to try using it as is or return
-                // But for now, let's just return to avoid errors
-                return;
-            }
-
-            console.log('Custom font URL:', fontUrl);
-            console.log('Custom font name:', actualFontName);
-        } else {
-            fontUrl = fontUrls[fontName] || fontUrls['Roboto'];
-        }
+        fontUrl = fontUrls[fontName] || fontUrls['Roboto'];
 
         // Append display strategy
         if (fontUrl.includes('?')) {
-            fontUrl += `&display=${strategy}`;
+            fontUrl += `&display=${strategy === 'async' ? 'swap' : strategy}`;
         } else {
-            fontUrl += `?display=${strategy}`; // Should not happen for Google Fonts but good for safety
+            fontUrl += `?display=${strategy === 'async' ? 'swap' : strategy}`;
         }
 
         // Load the actual font via link tag
@@ -593,91 +513,120 @@ body {
         link.href = fontUrl;
         document.head.appendChild(link);
 
-        // Wait for the font stylesheet to load before proceeding
-        // Note: This only waits for the CSS file, not the font files themselves
-        await new Promise(resolve => {
+        // Create a promise for the font load
+        const fontLoadPromise = new Promise(resolve => {
             link.onload = resolve;
             link.onerror = resolve;
             setTimeout(resolve, 1000); // Fallback timeout
         });
 
         // Simulate different loading strategies with visible delays
-        // Random load time between 1 and 3 seconds for better UX
-        // If isPreview is true, use 0 delay for instant feedback
         const simulatedLoadTime = isPreview ? 0 : (Math.floor(Math.random() * 20) + 10) * 100; // 1000-3000 ms
-
         console.log(`Simulating strategy: ${strategy} with duration: ${simulatedLoadTime}ms`);
 
-        switch (strategy) {
-            case 'block':
-                // FOIT: Hide text until font loads
-                if (this.elements.textSample) {
-                    this.elements.textSample.style.visibility = 'hidden';
-                    this.elements.textSample.style.fontFamily = `"${actualFontName}", sans-serif`;
-                }
+        // Check if it's a Chinese font and append sample text if needed
+        const chineseFonts = ['Noto Sans SC', 'Ma Shan Zheng', 'Zhi Mang Xing', 'Liu Jian Mao Cao', 'Long Cang'];
+        if (chineseFonts.includes(fontName) && this.elements.textSample) {
+            // Check if Chinese text is already there to avoid duplication
+            if (!this.elements.textSample.innerHTML.includes('天地玄黄')) {
+                const chineseSample = `
+                    <div style="margin-top: 2rem; border-top: 1px solid var(--surface-border); padding-top: 1rem;">
+                        <h3>Chinese Character Preview</h3>
+                        <p style="font-size: 1.5em; line-height: 1.6;">
+                            天地玄黄 宇宙洪荒 日月盈昃 辰宿列张<br>
+                            寒来暑往 秋收冬藏 闰余成岁 律吕调阳
+                        </p>
+                        <p>
+                            The quick brown fox jumps over the lazy dog.
+                        </p>
+                    </div>
+                `;
+                this.elements.textSample.innerHTML += chineseSample;
+            }
+        }
 
-                await new Promise(r => setTimeout(r, simulatedLoadTime));
+        // Check if it's a Japanese font and append sample text if needed
+        const japaneseFonts = ['Noto Sans JP', 'Sawarabi Mincho', 'Zen Maru Gothic', 'Reggae One', 'DotGothic16'];
+        if (japaneseFonts.includes(fontName) && this.elements.textSample) {
+            // Check if Japanese text is already there to avoid duplication
+            if (!this.elements.textSample.innerHTML.includes('いろはにほへと')) {
+                const japaneseSample = `
+                    <div style="margin-top: 2rem; border-top: 1px solid var(--surface-border); padding-top: 1rem;">
+                        <h3>Japanese Character Preview</h3>
+                        <p style="font-size: 1.5em; line-height: 1.6;">
+                            いろはにほへと ちりぬるを わかよたれそ つねならむ<br>
+                            うゐのおくやま けふこえて あさきゆめみし ゑひもせす
+                        </p>
+                        <p>
+                            The quick brown fox jumps over the lazy dog.
+                        </p>
+                    </div>
+                `;
+                this.elements.textSample.innerHTML += japaneseSample;
+            }
+        }
 
-                if (this.elements.textSample) {
-                    this.elements.textSample.style.visibility = 'visible';
-                }
-                this.metrics.updateMetricsFromLoader({ success: true, duration: simulatedLoadTime }, 'block');
-                break;
+        if (strategy === 'async') {
+            // Async: Immediate fallback, do NOT wait for fontLoadPromise initially
+            if (this.elements.textSample) {
+                this.elements.textSample.style.visibility = 'visible';
+                this.elements.textSample.style.fontFamily = 'Georgia, serif';
+            }
 
-            case 'swap':
-                // FOUT: Show fallback immediately, swap when ready
-                if (this.elements.textSample) {
-                    this.elements.textSample.style.visibility = 'visible';
-                    this.elements.textSample.style.fontFamily = 'Georgia, serif';
-                }
+            // Wait for BOTH the simulation time AND the actual font load
+            // This ensures we don't swap before the font is actually ready
+            await Promise.all([
+                new Promise(r => setTimeout(r, simulatedLoadTime)),
+                fontLoadPromise
+            ]);
 
-                await new Promise(r => setTimeout(r, simulatedLoadTime));
+            // Swap to target font
+            if (this.elements.textSample) {
+                this.elements.textSample.style.fontFamily = `"${actualFontName}", sans-serif`;
+            }
+            this.metrics.updateMetricsFromLoader({ success: true, duration: simulatedLoadTime }, 'async');
 
-                if (this.elements.textSample) {
-                    this.elements.textSample.style.fontFamily = `"${actualFontName}", sans-serif`;
-                }
-                this.metrics.updateMetricsFromLoader({ success: true, duration: simulatedLoadTime }, 'swap');
-                break;
+        } else {
+            // Block/Swap: Wait for font stylesheet to load first (standard behavior)
+            await fontLoadPromise;
 
-            case 'fallback':
-                // 1. Block Period (~100ms): Hide text
-                if (this.elements.textSample) {
-                    this.elements.textSample.style.visibility = 'hidden';
-                    this.elements.textSample.style.fontFamily = `"${actualFontName}", sans-serif`;
-                }
+            switch (strategy) {
+                case 'block':
+                    // FOIT: Hide text until font loads
+                    if (this.elements.textSample) {
+                        this.elements.textSample.style.visibility = 'hidden';
+                        this.elements.textSample.style.fontFamily = `"${actualFontName}", sans-serif`;
+                    }
 
-                await new Promise(r => setTimeout(r, 100));
+                    await new Promise(r => setTimeout(r, simulatedLoadTime));
 
-                // 2. Swap Period (~3s): Show fallback
-                if (this.elements.textSample) {
-                    this.elements.textSample.style.visibility = 'visible';
-                    this.elements.textSample.style.fontFamily = 'Georgia, serif';
-                }
+                    if (this.elements.textSample) {
+                        this.elements.textSample.style.visibility = 'visible';
+                    }
+                    this.metrics.updateMetricsFromLoader({ success: true, duration: simulatedLoadTime }, 'block');
+                    break;
 
-                // Check if font loads within the swap period (3000ms)
-                // For demo, we use the simulated time
-                if (simulatedLoadTime < 3000) {
-                    // Wait for the remaining load time
-                    await new Promise(r => setTimeout(r, simulatedLoadTime - 100));
+                case 'swap':
+                    // FOUT: Show fallback immediately, swap when ready
+                    if (this.elements.textSample) {
+                        this.elements.textSample.style.visibility = 'visible';
+                        this.elements.textSample.style.fontFamily = 'Georgia, serif';
+                    }
 
-                    // Swap to target font
+                    await new Promise(r => setTimeout(r, simulatedLoadTime));
+
                     if (this.elements.textSample) {
                         this.elements.textSample.style.fontFamily = `"${actualFontName}", sans-serif`;
                     }
-                    this.metrics.updateMetricsFromLoader({ success: true, duration: simulatedLoadTime }, 'fallback');
-                } else {
-                    // Font took too long (>3s), stick with fallback
-                    this.metrics.updateMetricsFromLoader({ success: true, duration: simulatedLoadTime, swapped: false }, 'fallback');
-                }
-                break;
+                    this.metrics.updateMetricsFromLoader({ success: true, duration: simulatedLoadTime }, 'swap');
+                    break;
 
-
-
-            default:
-                if (this.elements.textSample) this.elements.textSample.style.fontFamily = `"${actualFontName}", sans-serif`;
+                default:
+                    if (this.elements.textSample) this.elements.textSample.style.fontFamily = `"${actualFontName}", sans-serif`;
+            }
         }
 
-        this.updateTimeline({ duration: strategy === 'block' || strategy === 'swap' ? simulatedLoadTime : (strategy === 'fallback' ? 100 : 0) });
+        this.updateTimeline({ duration: strategy === 'block' || strategy === 'swap' || strategy === 'async' ? simulatedLoadTime : 0 });
     }
 
     updateTimeline(result) {

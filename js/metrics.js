@@ -57,10 +57,10 @@ export class Metrics {
                     foitValue = '0 s';
                     foutValue = `${clampedDuration} s`;
                     break;
-                case 'fallback':
-                    clsValue = Math.floor(Math.random() * 3) + 1; // 1-3 CLS
+                case 'async':
+                    clsValue = Math.floor(Math.random() * 5) + 3; // High CLS like swap
                     foitValue = '0 s';
-                    foutValue = '1 s';
+                    foutValue = `${clampedDuration} s`;
                     break;
                 case 'optional':
                     clsValue = 0;

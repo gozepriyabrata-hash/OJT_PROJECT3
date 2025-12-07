@@ -14,7 +14,7 @@ export class FontLoader {
         }
 
         const fontFace = new FontFace(fontName, `url(${url})`, {
-            display: strategy
+            display: strategy === 'async' ? 'swap' : strategy
         });
 
         this.currentFont = fontFace;
