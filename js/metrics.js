@@ -17,7 +17,6 @@ export class Metrics {
             const observer = new PerformanceObserver((list) => {
                 for (const entry of list.getEntries()) {
                     // For this tool, we want to measure shifts even if triggered by the "Reload" button
-                    // so we ignore entry.hadRecentInput check
                     console.log('Layout Shift:', entry.value, 'Had Input:', entry.hadRecentInput);
                     this.metrics.cls += entry.value;
                     this.updateUI('cls', this.metrics.cls);
