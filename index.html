@@ -63,19 +63,34 @@
                                 <option value="Bebas Neue">Bebas Neue</option>
                                 <option value="Anton">Anton</option>
                                 <option value="Abril Fatface">Abril Fatface</option>
+                                <option value="Righteous">Righteous</option>
+                            </optgroup>
+                            <optgroup label="Handwriting">
+                                <option value="Dancing Script">Dancing Script</option>
+                                <option value="Pacifico">Pacifico</option>
+                            </optgroup>
+                            <optgroup label="Chinese">
+                                <option value="Noto Sans SC">Noto Sans SC</option>
+                                <option value="Ma Shan Zheng">Ma Shan Zheng</option>
+                                <option value="Zhi Mang Xing">Zhi Mang Xing</option>
+                                <option value="Liu Jian Mao Cao">Liu Jian Mao Cao</option>
+                                <option value="Long Cang">Long Cang</option>
+                            </optgroup>
+                            <optgroup label="Japanese">
+                                <option value="Noto Sans JP">Noto Sans JP</option>
+                                <option value="Sawarabi Mincho">Sawarabi Mincho</option>
+                                <option value="Zen Maru Gothic">Zen Maru Gothic</option>
+                                <option value="Reggae One">Reggae One</option>
+                                <option value="DotGothic16">DotGothic16</option>
                             </optgroup>
                             <optgroup label="Monospace">
                                 <option value="Fira Code">Fira Code</option>
                                 <option value="JetBrains Mono">JetBrains Mono</option>
                                 <option value="Source Code Pro">Source Code Pro</option>
+                                <option value="Space Mono">Space Mono</option>
                             </optgroup>
-                            <option value="Custom">Custom URL...</option>
+                            </optgroup>
                         </select>
-                        <div id="custom-url-group" class="hidden" style="margin-top: 0.5rem;">
-                            <input type="text" id="custom-font-url" placeholder="Enter Google Fonts URL...">
-                            <input type="text" id="custom-font-name" placeholder="Font Name (e.g., Inter)"
-                                style="margin-top: 0.5rem;">
-                        </div>
                     </div>
 
                     <div id="optimizer-controls">
@@ -84,8 +99,7 @@
                             <select id="strategy-select">
                                 <option value="block">Blocking (Default)</option>
                                 <option value="swap">Swap</option>
-                                <option value="fallback">Fallback</option>
-
+                                <option value="async">Async</option>
                             </select>
                             <p class="helper-text">Controls how the font behaves while loading.</p>
                         </div>
